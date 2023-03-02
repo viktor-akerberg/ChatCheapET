@@ -50,7 +50,7 @@ def gradio_chat(prompt, messages = []):
     messages.append({"role": "assistant", "content": response})
 
     # Return the updated list of messages and history tokens
-    return messages
+    return response
 
 
 # Define a function for chatting within the terminal
@@ -63,5 +63,5 @@ def in_terminal_chat(encoder, messages, history_tokens) -> None:
         prompt = input("You: ")
         # Generate the updated list of messages and history tokens for the conversation based on the user's prompt
         messages, history_tokens = construct_messages_list(prompt, encoder, messages, history_tokens)
-    #print(messages)
+    
     print("Total tokens this conversation:", len(history_tokens))
