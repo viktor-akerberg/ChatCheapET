@@ -17,27 +17,22 @@ class Chatbot:
         self.messages = [{"role": "system", "content": pre_prompt}]
         print(pre_prompt)
 
-    def chat_response(self) -> str:
-        # Use OpenAI's Chat API to generate a response to the prompt and history of messages
-        response = openai.ChatCompletion.create(
+    def respond(self, prompt) -> list[dict[str, str]]:
+        # Append the user's prompt as a "user" role message to the list of messages
+        self.messages.append({"role": "user", "content": prompt})
+        # Get a response from the OpenAI API
+        api_response = openai.ChatCompletion.create(
             model=self.model,
             max_tokens=self.max_tokens,
             temperature=self.temperature,
             messages=self.messages,
         )
         # Get the content of the response from the API result
-        content = response["choices"][0]["message"]["content"]
-        # Return the response content
-        print(content)
-        return content
-
-    def construct_messages_list(self, prompt) -> list[dict[str, str]]:
-        # Append the user's prompt as a "user" role message to the list of messages
-        self.messages.append({"role": "user", "content": prompt})
-        # Get the AI's response to the user's prompt and history of messages
-        response = self.chat_response()
+        response = api_response["choices"][0]["message"]["content"]
         # Append the AI's response as an "assistant" role message to the list of messages
         self.messages.append({"role": "assistant", "content": response})
+        # Set the latest_response
+        self.latest_response = self.messages[-1]['content']
         return self.messages
 
     def terminal_chat(self):
@@ -47,19 +42,17 @@ class Chatbot:
         while prompt != "exit":
             # Get the user's prompt
             prompt = input("You: ")
-            # Generate the updated list of messages and history tokens for the conversation based on the user's prompt
-            self.construct_messages_list(prompt)
+            # Generate the updated list of messages based on the user's prompt
+            self.respond(prompt)
+            print(self.latest_response)
 
     ######## Functions used for Gradio interface ############
-    def convert_to_tuples_list(self, messages) -> list[tuple[str, str]]:
-        tuples_list = []
-        for i in range(1, len(messages), 2):
-            tuples_list.append((messages[i]["content"], messages[i + 1]["content"]))
-        return tuples_list
 
-    def gradio_chatbot_func(self, input, messages=None):
-        self.construct_messages_list(input)
-        messages_tuples_list = self.convert_to_tuples_list(self.messages)
+    def gradio_chatbot_func(self, input, _=None):
+        self.respond(input)
+        messages_tuples_list = []
+        for i in range(1, len(self.messages), 2):
+            messages_tuples_list.append((self.messages[i]["content"], self.messages[i + 1]["content"]))
         return messages_tuples_list, self.messages
 
     def gradio_chat(self):
