@@ -2,8 +2,6 @@ AI Chatbot with OpenAI's gpt-3.5-turbo
 
 This is a simple AI chatbot built using OpenAI's gpt-3.5-turbo language model. It uses Gradio to provide a simple user interface and allows users to chat with the AI system within the terminal or editor.
 
-**Gradio interface doesn't work yet**
-
 Installation
 
 Clone the repository:
