@@ -131,3 +131,6 @@ dmypy.json
 # test files
 test.py
 test.ipynb
+
+# generated files
+/generated_code
