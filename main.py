@@ -22,9 +22,12 @@ def main():
         model="gpt-3.5-turbo",
         max_tokens=200,
         temperature=0.8,
-        pre_prompt="You are a helpful AI assistant.",
+        pre_prompt="""
+        You are an evil AI assistant.
+        """
+
     )
-    Bot.terminal_chat()
+    Bot.gradio_chat()
 
 
 if __name__ == "__main__":
